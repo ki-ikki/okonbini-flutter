@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../constant/strings.dart';
+import 'package:okonbini_flutter/constant/strings.dart';
 import 'package:okonbini_flutter/provider/firebase_auth_provider.dart';
 import 'package:okonbini_flutter/provider/register_provider.dart';
 import 'package:okonbini_flutter/view/Home/home.dart';
+import 'package:okonbini_flutter/view/Login/login.dart';
 
 class UserRegisterButton extends ConsumerWidget {
   const UserRegisterButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final email = ref.watch(emailProvider);
-    final password = ref.watch(passwordProvider);
+    final userName = ref.watch(registerUserIdProvider);
+    final dateOfBirth = ref.watch(registerDateOfBirthProvider);
+    final email = ref.watch(registerEmailProvider);
+    final password = ref.watch(registerPasswordProvider);
     final registerButtonEnabled = ref.watch(registerButtonEnabledProvider);
 
     return SizedBox(
@@ -22,16 +25,17 @@ class UserRegisterButton extends ConsumerWidget {
         ),
         onPressed: registerButtonEnabled
             ? () async {
-                await ref
+                bool isRegistrationComplete = await ref
                     .read(firebaseAuthProvider.notifier)
-                    .register(email, password);
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const HomePage();
-                    },
-                  ),
-                );
+                    .register(userName, dateOfBirth!, email, password, ref);
+
+                if (isRegistrationComplete) {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const HomePage()));
+                } else {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const LoginPage()));
+                }
               }
             : null,
         child: Text(Strings.register.registerButton,

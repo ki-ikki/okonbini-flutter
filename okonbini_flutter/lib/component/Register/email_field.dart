@@ -8,8 +8,8 @@ class EmailField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final email = ref.watch(emailProvider);
-    final error = ref.watch(emailErrorProvider);
+    final email = ref.watch(registerEmailProvider);
+    final error = ref.watch(registerEmailErrorProvider);
 
     return Form(
         autovalidateMode: AutovalidateMode.always,
@@ -36,7 +36,7 @@ class EmailField extends ConsumerWidget {
               ),
             ),
             onChanged: (value) {
-              ref.read(emailProvider.notifier).state = value;
+              ref.read(registerEmailProvider.notifier).state = value;
               validateEmailInput(ref);
             }));
   }

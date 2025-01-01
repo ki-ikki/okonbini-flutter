@@ -38,6 +38,8 @@ dependencies:
   firebase_auth: ^5.3.4
   flutter_riverpod: ^2.6.1
   email_validator: ^2.1.17
+  flutter_datetime_picker_plus: ^2.1.0
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:

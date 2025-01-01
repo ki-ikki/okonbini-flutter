@@ -8,8 +8,8 @@ class UserIdField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userId = ref.watch(userIdProvider);
-    final error = ref.watch(userIdErrorProvider);
+    final userId = ref.watch(registerUserIdProvider);
+    final error = ref.watch(registerUserIdErrorProvider);
 
     return TextFormField(
       initialValue: userId,
@@ -38,7 +38,7 @@ class UserIdField extends ConsumerWidget {
         ),
       ),
       onChanged: (value) {
-        ref.read(userIdProvider.notifier).state = value;
+        ref.read(registerUserIdProvider.notifier).state = value;
         validateUserIdInput(ref);
       },
     );

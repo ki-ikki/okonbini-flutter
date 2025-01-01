@@ -4,49 +4,62 @@ import 'package:okonbini_flutter/ui_core/email_validator.dart';
 import 'package:okonbini_flutter/ui_core/password_validator.dart';
 import 'package:okonbini_flutter/ui_core/password_confirm_validator.dart';
 import 'package:okonbini_flutter/ui_core/register_button_validator.dart';
+import 'package:okonbini_flutter/ui_core/date_of_birth_validator.dart';
 
 // ユーザーIDフォームの状態管理
-final userIdProvider = StateProvider<String>((ref) => '');
-final userIdErrorProvider = StateProvider<String?>((ref) => null);
+final registerUserIdProvider = StateProvider<String>((ref) => '');
+final registerUserIdErrorProvider = StateProvider<String?>((ref) => null);
 
 void validateUserIdInput(WidgetRef ref) {
-  final userId = ref.read(userIdProvider);
+  final userId = ref.read(registerUserIdProvider);
   final error = validateUserId(userId);
-  ref.read(userIdErrorProvider.notifier).state = error;
+  ref.read(registerUserIdErrorProvider.notifier).state = error;
+  enableRegisterButton(ref);
+}
+
+// 誕生日フォームの状態管理
+final registerDateOfBirthProvider = StateProvider<DateTime?>((ref) => null);
+final registerDateOfBirthErrorProvider = StateProvider<String?>((ref) => null);
+
+void validateUserDateOfBirthInput(WidgetRef ref) {
+  final dateOfBirth = ref.read(registerDateOfBirthProvider);
+  final error = validateDateOfBirth(dateOfBirth);
+  ref.read(registerDateOfBirthErrorProvider.notifier).state = error;
   enableRegisterButton(ref);
 }
 
 // メールアドレスフォームの状態管理
-final emailProvider = StateProvider<String>((ref) => '');
-final emailErrorProvider = StateProvider<String?>((ref) => null);
+final registerEmailProvider = StateProvider<String>((ref) => '');
+final registerEmailErrorProvider = StateProvider<String?>((ref) => null);
 
 void validateEmailInput(WidgetRef ref) {
-  final email = ref.read(emailProvider);
+  final email = ref.read(registerEmailProvider);
   final error = validateEmail(email);
-  ref.read(emailErrorProvider.notifier).state = error;
+  ref.read(registerEmailErrorProvider.notifier).state = error;
   enableRegisterButton(ref);
 }
 
 // パスワードフォームの状態管理
-final passwordProvider = StateProvider<String>((ref) => '');
-final passwordErrorProvider = StateProvider<String?>((ref) => null);
+final registerPasswordProvider = StateProvider<String>((ref) => '');
+final registerPasswordErrorProvider = StateProvider<String?>((ref) => null);
 
 void validatePasswordInput(WidgetRef ref) {
-  final password = ref.read(passwordProvider);
+  final password = ref.read(registerPasswordProvider);
   final error = validatePassword(password);
-  ref.read(passwordErrorProvider.notifier).state = error;
+  ref.read(registerPasswordErrorProvider.notifier).state = error;
   enableRegisterButton(ref);
 }
 
 // パスワード確認フォームの状態管理
-final passwordConfirmProvider = StateProvider<String>((ref) => '');
-final passwordConfirmErrorProvider = StateProvider<String?>((ref) => null);
+final registerPasswordConfirmProvider = StateProvider<String>((ref) => '');
+final registerPasswordConfirmErrorProvider =
+    StateProvider<String?>((ref) => null);
 
 void validatePasswordConfirmInput(WidgetRef ref) {
-  final password = ref.read(passwordProvider);
-  final passwordConfirm = ref.read(passwordConfirmProvider);
+  final password = ref.read(registerPasswordProvider);
+  final passwordConfirm = ref.read(registerPasswordConfirmProvider);
   final error = validatePasswordConfirm(password, passwordConfirm);
-  ref.read(passwordConfirmErrorProvider.notifier).state = error;
+  ref.read(registerPasswordConfirmErrorProvider.notifier).state = error;
   enableRegisterButton(ref);
 }
 
@@ -54,22 +67,26 @@ void validatePasswordConfirmInput(WidgetRef ref) {
 final registerButtonEnabledProvider = StateProvider<bool>((ref) => false);
 
 void enableRegisterButton(WidgetRef ref) {
-  final userId = ref.read(userIdProvider);
-  final email = ref.read(emailProvider);
-  final password = ref.read(passwordProvider);
+  final userId = ref.read(registerUserIdProvider);
+  final dateOfBirth = ref.read(registerDateOfBirthProvider);
+  final email = ref.read(registerEmailProvider);
+  final password = ref.read(registerPasswordProvider);
 
-  final passwordConfirm = ref.read(passwordConfirmProvider);
-  final userIdError = ref.read(userIdErrorProvider);
-  final emailError = ref.read(emailErrorProvider);
-  final passwordError = ref.read(passwordErrorProvider);
-  final passwordConfirmError = ref.read(passwordConfirmErrorProvider);
+  final passwordConfirm = ref.read(registerPasswordConfirmProvider);
+  final userIdError = ref.read(registerUserIdErrorProvider);
+  final dateOfBirthError = ref.read(registerDateOfBirthErrorProvider);
+  final emailError = ref.read(registerEmailErrorProvider);
+  final passwordError = ref.read(registerPasswordErrorProvider);
+  final passwordConfirmError = ref.read(registerPasswordConfirmErrorProvider);
 
   final isButtonEnabled = validateRegisterButton(
     userId,
+    dateOfBirth,
     email,
     password,
     passwordConfirm,
     userIdError,
+    dateOfBirthError,
     emailError,
     passwordError,
     passwordConfirmError,

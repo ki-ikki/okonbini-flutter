@@ -8,7 +8,7 @@ class PasswordField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final emailErrorProvider = ref.watch(passwordErrorProvider);
+    final emailErrorProvider = ref.watch(registerPasswordErrorProvider);
 
     return TextFormField(
         decoration: InputDecoration(
@@ -34,7 +34,7 @@ class PasswordField extends ConsumerWidget {
         ),
         obscureText: true,
         onChanged: (value) {
-          ref.read(passwordProvider.notifier).state = value;
+          ref.read(registerPasswordProvider.notifier).state = value;
           validatePasswordInput(ref);
         });
   }
