@@ -35,6 +35,9 @@ class _RegisterStrings {
   final String emailInputIsEmpty = 'ユーザーIDを入力してください';
   final String userIdInputIsInvalid = '英数字と記号 (_ - @ .) のみ使用できます';
   final String userIdHint = '英数字記号で入力してください';
+  final String dateOfBirthLabel = '生年月日';
+  final String dateOfBirthInputIsEmpty = '生年月日を入力してください';
+  final String dateOfBirthErrorFutureDate = '誕生日は今日以前の日付を入力してください。';
   final String emailLabel = 'メールアドレス';
   final String emailInputIsInvalid = 'メールアドレスの形式が正しくありません';
   final String passwordLabel = 'パスワード';

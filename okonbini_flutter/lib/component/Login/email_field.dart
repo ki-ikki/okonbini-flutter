@@ -24,7 +24,7 @@ class EmailField extends ConsumerWidget {
           borderRadius: BorderRadius.circular(30),
         ),
       ),
-      onChanged: (value) => ref.read(emailProvider.notifier).state = value,
+      onChanged: (value) => ref.read(loginEmailProvider.notifier).state = value,
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:okonbini_flutter/component/Register/password_confirm_field.dart';
 import 'package:okonbini_flutter/component/Register/user_id_field.dart';
+import 'package:okonbini_flutter/component/Register/data_of_birth_field.dart';
 import 'package:okonbini_flutter/component/Register/email_field.dart';
 import 'package:okonbini_flutter/component/Register/password_field.dart';
 import 'package:okonbini_flutter/component/Register/register_button.dart';
@@ -35,6 +36,11 @@ class _RegisterState extends ConsumerState<Register> {
                   Container(
                     margin: const EdgeInsets.only(bottom: 16),
                     child: UserIdField(),
+                  ),
+
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    child: const DataOfBirthField(),
                   ),
 
                   // メールアドレス入力

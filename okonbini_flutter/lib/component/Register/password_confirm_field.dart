@@ -8,7 +8,8 @@ class PasswordConfirmField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final passwordConfirmError = ref.watch(passwordConfirmErrorProvider);
+    final passwordConfirmError =
+        ref.watch(registerPasswordConfirmErrorProvider);
 
     return TextFormField(
       decoration: InputDecoration(
@@ -33,7 +34,7 @@ class PasswordConfirmField extends ConsumerWidget {
       ),
       obscureText: true,
       onChanged: (value) {
-        ref.read(passwordConfirmProvider.notifier).state = value;
+        ref.read(registerPasswordConfirmProvider.notifier).state = value;
         validatePasswordConfirmInput(ref);
       },
     );

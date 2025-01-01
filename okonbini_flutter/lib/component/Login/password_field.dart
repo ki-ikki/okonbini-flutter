@@ -25,7 +25,8 @@ class PasswordField extends ConsumerWidget {
         ),
       ),
       obscureText: true,
-      onChanged: (value) => ref.read(passwordProvider.notifier).state = value,
+      onChanged: (value) =>
+          ref.read(loginPasswordProvider.notifier).state = value,
     );
   }
 }
