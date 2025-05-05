@@ -1,5 +1,15 @@
 # okonbini-flutter
 
+## 事前準備
+
+- 検証用トークン取得
+
+```
+curl 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAWc9sWltZOqp477y5XCyZjMWX1ETe390w' \
+-H 'Content-Type: application/json' \
+--data-binary '{"email":"kimuraikki0125@gmail.com","password":"ikki0125","returnSecureToken":true}'
+```
+
 ## ディレクトリ構成
 
 ### lib

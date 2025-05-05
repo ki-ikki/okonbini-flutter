@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/firebase_options.dart';
 import 'view/Login/login.dart';
 import 'view/Home/home.dart';
-import 'provider/firebase_auth_provider.dart';
 
 void main() async {
+  await dotenv.load(fileName: '.env');
   WidgetsFlutterBinding.ensureInitialized();
 
   // Firebase の初期化
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Okonbini',
       theme: ThemeData(
+        scaffoldBackgroundColor: const Color(0xFFF1F9FF),
         primarySwatch: Colors.blue,
       ),
       home: AuthState(),

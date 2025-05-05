@@ -38,6 +38,7 @@ class _RegisterState extends ConsumerState<Register> {
                     child: UserIdField(),
                   ),
 
+                  // 生年月日入力
                   Container(
                     margin: const EdgeInsets.only(bottom: 16),
                     child: const DataOfBirthField(),
