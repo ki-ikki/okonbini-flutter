@@ -18,8 +18,7 @@ class LoginPage extends ConsumerStatefulWidget {
 class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   Widget build(BuildContext context) {
-    final infoText = ref.watch(firebaseAuthProvider);
-    print(infoText); //TODO: remove
+    final infoText = ref.read(firebaseAuthProvider);
 
     return Scaffold(
       body: Center(

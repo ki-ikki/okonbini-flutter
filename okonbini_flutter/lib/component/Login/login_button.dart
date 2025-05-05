@@ -27,22 +27,16 @@ class LoginButton extends ConsumerWidget {
           ),
         ),
         onPressed: () async {
+          /*
+            * ログイン成功時、 ログイン情報を provider に保存し HomePage へ遷移
+            * ログイン情報を保存できなかった場合、ログイン画面を表示
+            */
           bool isLogin;
           try {
             await ref
                 .read(firebaseAuthProvider.notifier)
                 .login(email, password, ref);
-
-            /*
-            * ログイン成功時、 ログイン情報を provider に保存し HomePage へ遷移
-            * ログイン情報を保存できなかった場合、ログイン画面を表示
-            */
-            try {
-              await updateLoggedInUserProvider(ref);
-              isLogin = true;
-            } catch (e) {
-              isLogin = false;
-            }
+            isLogin = true;
           } catch (e) {
             debugPrint('Login failed : $e');
             isLogin = false;

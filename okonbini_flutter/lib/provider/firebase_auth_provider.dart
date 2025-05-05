@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:okonbini_flutter/constant/strings.dart';
@@ -27,11 +28,21 @@ class FirebaseAuthNotifier extends StateNotifier<String> {
   Future<bool> register(String userName, DateTime dateOfBirth, String email,
       String password, WidgetRef ref) async {
     try {
+      // Firebase Auth でユーザー登録
       await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
 
-      // ユーザー情報の provider を更新し、 ユーザー情報を登録
-      await updateLoggedInUserProvider(ref);
+      // Firebase Auth でログイン中のユーザー情報を取得
+      final User? currentUser = FirebaseAuth.instance.currentUser;
+
+      // ユーザー情報から provider を更新
+      if (currentUser != null) {
+        await updateLoggedInUserProvider(currentUser, ref);
+      } else {
+        debugPrint('No user is currently logged in.');
+      }
+
+      // ユーザー情報を DB に登録
       try {
         final response = await http.post(
           Uri.parse(API_BASE_URL + 'users/register'),
@@ -49,8 +60,16 @@ class FirebaseAuthNotifier extends StateNotifier<String> {
           }),
         );
 
-        debugPrint('Response status: ${response.statusCode}');
-        debugPrint('Response body: ${response.body}');
+        // ローカルにユーザー情報を保存
+        if (response.statusCode == 200) {
+          await saveUserInformationLocally(
+              ref.read(uidProvider.notifier).state,
+              ref.read(emailProvider.notifier).state,
+              ref.read(idTokenProvider.notifier).state);
+        } else {
+          debugPrint('User registration API failed: ${response.statusCode}');
+          return false;
+        }
       } catch (e) {
         debugPrint('User registration API execution error: $e');
       }
@@ -66,12 +85,18 @@ class FirebaseAuthNotifier extends StateNotifier<String> {
   Future<void> login(String email, String password, WidgetRef ref) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-      await updateLoggedInUserProvider(ref);
       state = Strings.login.loginSuccess;
-      print(state); //TODO remove
     } catch (e) {
       state = Strings.login.loginFailure;
-      print(state); //TODO remove
+    }
+
+    // Firebase Auth でログイン中のユーザー情報を取得する
+    final User? currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser != null) {
+      await updateLoggedInUserProvider(currentUser, ref);
+    } else {
+      debugPrint('No user is currently logged in.');
     }
   }
 
@@ -80,11 +105,8 @@ class FirebaseAuthNotifier extends StateNotifier<String> {
     try {
       await _auth.signOut();
       state = Strings.login.logoutSuccess;
-      print(Strings.login.logoutSuccess); //TODO remove
-      print(state); //TODO remove
     } catch (e) {
       state = Strings.login.logoutFailure;
-      print(state); //TODO remove
     }
   }
 
@@ -104,37 +126,34 @@ class FirebaseAuthNotifier extends StateNotifier<String> {
 }
 
 // Firebase Auth でログイン中のユーザー情報を取得し、 provider を更新
-Future<void> updateLoggedInUserProvider(WidgetRef ref) async {
+Future<void> updateLoggedInUserProvider(User currentUser, WidgetRef ref) async {
   try {
-    final User? currentUser = FirebaseAuth.instance.currentUser;
+    // Firebase Auth から idToken を取得し、 provider を更新
+    ref.read(idTokenProvider.notifier).state =
+        await currentUser.getIdToken(true) ?? '';
 
-    if (currentUser != null) {
-      ref.read(emailProvider.notifier).state = currentUser.email ?? '';
-      ref.read(uidProvider.notifier).state = currentUser.uid;
-
-      // Firebase Auth から idToken を取得し、 provider を更新
-      String? token = await currentUser.getIdToken(true);
-      ref.read(idTokenProvider.notifier).state = token ?? '';
-      debugPrint('Token updated: ${currentUser.email}');
-    } else {
-      debugPrint('No user is currently logged in.');
-    }
+    await saveUserInformationLocally(currentUser.uid, currentUser.email ?? '',
+        await currentUser.getIdToken() ?? '');
   } catch (e) {
     debugPrint('Error retrieving current user: $e');
   }
 }
 
-// Firebase Auth トークンのリフレッシュする
-Future<void> setupTokenRefresh(WidgetRef ref) async {
-  FirebaseAuth.instance.idTokenChanges().listen((User? currentUser) async {
-    if (currentUser != null) {
-      try {
-        String? token = await currentUser.getIdToken(true);
-        ref.read(idTokenProvider.notifier).state = token ?? '';
-        debugPrint('Token refreshed: $token');
-      } catch (e) {
-        debugPrint('Error refreshing token: $e');
-      }
-    }
-  });
+// ローカルにユーザー情報を保存
+Future<void> saveUserInformationLocally(
+    String uid, String email, String idToken) async {
+  final prefs = await SharedPreferences.getInstance();
+  prefs.setString('uid', uid);
+  prefs.setString('email', email);
+  prefs.setString('idToken', idToken);
+}
+
+// ローカルからユーザー情報を取得
+Future<Map<String, dynamic>> getUserInformationLocally() async {
+  final prefs = await SharedPreferences.getInstance();
+  return {
+    'uid': prefs.getString('uid'),
+    'email': prefs.getString('email'),
+    'idToken': prefs.getString('idToken'),
+  };
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../provider/register_provider.dart';
-import '../../constant/strings.dart';
+import 'package:okonbini_flutter/provider/register_provider.dart';
+import 'package:okonbini_flutter/constant/strings.dart';
 
 class EmailField extends ConsumerWidget {
   const EmailField({Key? key}) : super(key: key);
